@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.example.sample.service.impl.SampleMapper">
+
+	<resultMap id="sample" type="egovframework.example.sample.service.SampleVO">
+		<result property="articleId" column="article_id"/>
+		<result property="title" column="title"/>
+		<result property="content" column="content"/>
+		<result property="userId" column="user_id"/>
+		<result property="formId" column="form_id"/>
+		<result property="status" column="status"/>
+		<result property="createdAt" column="created_at"/>
+		<result property="updatedAt" column="updated_at"/>	
+	</resultMap>
+
+	<insert id="insertSample" parameterType="SampleVO">
+
+			INSERT INTO article
+				( title
+				  , content
+				  , user_id
+				  , form_id
+				  , status
+				  , created_at )
+			VALUES ( #{title}
+				  , #{content}
+				  , #{userId}
+				  , #{formId}
+				  , 'RECEIVED'
+				  , NOW() )
+
+	</insert>
+
+	<update id="updateSample">
+
+			UPDATE article
+			SET title=#{title}
+				, content=#{content}
+				, status=#{status}
+				, updated_at=NOW()
+				  WHERE article_id=#{articleId}
+
+	</update>
+
+	<delete id="deleteSample">
+
+			DELETE FROM article
+			WHERE article_id=#{articleId}
+
+	</delete>
+
+	<select id="selectSample" resultMap="sample">
+
+			SELECT
+				article_id, title, content, user_id, form_id, status, created_at, updated_at
+			FROM article
+			WHERE article_id=#{articleId}
+
+	</select>
+
+	<select id="selectSampleList" parameterType="searchVO" resultType="egovMap">
+
+			SELECT
+				article_id, title, content, user_id, form_id, status, created_at, updated_at
+			FROM article
+			WHERE 1=1
+			<if test="searchKeyword != null and searchKeyword != ''">
+		        <choose>
+		            <when test="searchCondition == 0">
+						AND	title LIKE '%' || #{searchKeyword} || '%'
+					</when>
+		            <when test="searchCondition == 1">
+						AND	content LIKE '%' || #{searchKeyword} || '%'
+					</when>
+				</choose>
+			</if>
+			ORDER BY article_id DESC  
+			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>
+
+	<select id="selectSampleListTotCnt" parameterType="searchVO" resultType="int">
+
+			SELECT COUNT(*) totcnt
+			FROM article
+			WHERE 1=1
+			<if test="searchKeyword != null and searchKeyword != ''">
+		        <choose>
+		            <when test="searchCondition == 0">
+						AND title LIKE '%' || #{searchKeyword} || '%'
+					</when>
+		            <when test="searchCondition == 1">
+						AND	content LIKE '%' || #{searchKeyword} || '%'
+					</when>
+				</choose>
+			</if>
+	</select>
+
+</mapper>
