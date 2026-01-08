@@ -151,9 +151,10 @@ public class EgovSampleController {
 	 * @exception Exception
 	 */
 	@GetMapping("/updateSampleView.do")
-	public String updateSampleView(@RequestParam("selectedId") String id, @ModelAttribute("searchVO") SampleDefaultVO searchVO, Model model) throws Exception {
+	public String updateSampleView(@RequestParam("selectedId") Long articleId, @ModelAttribute("searchVO") SampleDefaultVO searchVO, Model model) throws Exception {
 		SampleVO sampleVO = new SampleVO();
-		sampleVO.setId(id);
+		//sampleVO.setId(id);
+		sampleVO.setArticleId(articleId);
 		// 변수명은 CoC 에 따라 sampleVO
 		model.addAttribute(selectSample(sampleVO, searchVO));
 		return "sample/egovSampleRegister";
