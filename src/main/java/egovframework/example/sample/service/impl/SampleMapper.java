@@ -17,6 +17,7 @@ package egovframework.example.sample.service.impl;
 
 import java.util.List;
 
+import egovframework.example.sample.service.FormsVO;
 import egovframework.example.sample.service.SampleDefaultVO;
 import egovframework.example.sample.service.SampleVO;
 
@@ -87,5 +88,13 @@ public interface SampleMapper {
 	 * @exception
 	 */
 	int selectSampleListTotCnt(SampleDefaultVO searchVO);
+	
+	/**
+     * 서식 목록을 조회한다.
+     * @return 서식 목록
+     * @exception Exception
+     */
+    List<FormsVO> selectFormsList() throws Exception;
+
 
 }

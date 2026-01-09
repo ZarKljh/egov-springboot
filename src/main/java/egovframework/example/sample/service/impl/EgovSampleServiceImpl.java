@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import egovframework.example.sample.service.EgovSampleService;
+import egovframework.example.sample.service.FormsVO;
 import egovframework.example.sample.service.SampleDefaultVO;
 import egovframework.example.sample.service.SampleVO;
 import lombok.RequiredArgsConstructor;
@@ -56,6 +57,7 @@ public class EgovSampleServiceImpl extends EgovAbstractServiceImpl implements Eg
 
 	/** ID Generation */
 	private final EgovIdGnrService egovIdGnrService;
+	
 
 	/**
 	 * 글을 등록한다.
@@ -132,6 +134,11 @@ public class EgovSampleServiceImpl extends EgovAbstractServiceImpl implements Eg
 	@Override
 	public int selectSampleListTotCnt(SampleDefaultVO searchVO) {
 		return sampleDAO.selectSampleListTotCnt(searchVO);
+	}
+	
+	@Override
+	public List<FormsVO> selectFormsList() throws Exception {
+		return sampleDAO.selectFormsList();
 	}
 
 }

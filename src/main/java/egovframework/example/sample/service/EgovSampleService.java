@@ -82,5 +82,12 @@ public interface EgovSampleService {
 	 * @exception
 	 */
 	int selectSampleListTotCnt(SampleDefaultVO searchVO);
+	
+	/**
+     * 서식 목록을 조회한다.
+     * @return 서식 목록
+     * @exception Exception
+     */
+    List<FormsVO> selectFormsList() throws Exception;
 
 }
