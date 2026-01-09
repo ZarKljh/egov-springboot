@@ -31,6 +31,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springmodules.validation.commons.DefaultBeanValidator;
 
 import egovframework.example.sample.service.EgovSampleService;
+import egovframework.example.sample.service.FormsVO;
 import egovframework.example.sample.service.SampleDefaultVO;
 import egovframework.example.sample.service.SampleVO;
 import lombok.RequiredArgsConstructor;
@@ -157,6 +158,11 @@ public class EgovSampleController {
 		sampleVO.setArticleId(articleId);
 		// 변수명은 CoC 에 따라 sampleVO
 		model.addAttribute(selectSample(sampleVO, searchVO));
+		
+		List<FormsVO> formsList = sampleService.selectFormsList();
+		
+		model.addAttribute("formsList", formsList);
+		
 		return "sample/egovSampleRegister";
 	}
 
