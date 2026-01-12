@@ -9,6 +9,7 @@
 		<result property="userId" column="user_id"/>
 		<result property="formId" column="form_id"/>
 		<result property="status" column="status"/>
+		<result property="parentArticleId" column="parent_article_id"/>
 		<result property="createdAt" column="created_at"/>
 		<result property="updatedAt" column="updated_at"/>	
 	</resultMap>
@@ -21,12 +22,14 @@
 				  , user_id
 				  , form_id
 				  , status
+				  , parent_article_id
 				  , created_at )
 			VALUES ( #{title}
 				  , #{content}
 				  , #{userId}
 				  , #{formId}
-				  , 'RECEIVED'
+				  , #{status}
+				  , #{parentArticleId}
 				  , NOW() )
 
 	</insert>

@@ -47,7 +47,7 @@
            	document.detailForm.action = "<c:url value='/deleteSample.do'/>";
            	document.detailForm.submit();
         }
-        
+        -->
         /* 글 등록 function */
         function fn_egov_save() {
         	frm = document.detailForm;
@@ -59,12 +59,13 @@
             }
         }
         
-        -->
+       
     </script>
 </head>
 <body style="text-align:center; margin:0 auto; display:inline; padding-top:100px;">
 
-<form:form modelAttribute="sampleVO" id="detailForm" name="detailForm">
+<form:form modelAttribute="sampleVO" id="detailForm" name="detailForm" method="post">
+	<form:hidden path="parentArticleId" />
     <div id="content_pop">
     	<!-- 타이틀 -->
     	<div id="title">
@@ -83,6 +84,7 @@
     			<col width="?"/>
     		</colgroup>
     		<c:if test="${registerFlag == 'modify'}">
+    			<!-- // 게시물 아이디 : hidden 처리 -->
         		<tr>
         			<td class="tbtd_caption"><label for="articleId"><spring:message code="title.sample.articleId" /></label></td>
         			<td class="tbtd_content">
@@ -91,6 +93,7 @@
         		</tr>
     		</c:if>
     		<tr>
+    			<!-- // 게시글 제목 -->
     			<td class="tbtd_caption"><label for="title"><spring:message code="title.sample.title" /></label></td>
     			<td class="tbtd_content">
     				<form:input path="title" maxlength="30" cssClass="txt"/>
@@ -98,31 +101,57 @@
     			</td>
     		</tr>
     		<tr>
+    			<!-- // 게시글 상태: 'REGISTER(신규접수), ANSWERED(답변완료), HOLD(보류), REQUERY(재문의) -->
     			<td class="tbtd_caption"><label for="status"><spring:message code="title.sample.status" /></label></td>
     			<td class="tbtd_content">
+    				<!-- // status 이전버전 
     				<form:select path="status" cssClass="use">
     					<form:option value="Y" label="Yes" />
     					<form:option value="N" label="No" />
     				</form:select>
+    				-->
+    				<!-- // status 게시글 신규 등록시에는 REGISTER readonly 표시-->
+    				<c:if test="${registerFlag == 'create'}">
+    					<c:if test="${empty sampleVO.parentArticleId or sampleVO.parentArticleId == 0}">
+    						<input type="text" value="REGISTER" readonly="readonly" class="essentiality"></input>
+    						<form:hidden path="status" value="REGISTER" />
+    					</c:if>
+    					<c:if test="${sampleVO.parentArticleId > 0}">
+                                <input type="text" value="REQUERY" readonly="readonly" class="essentiality" />
+                                <form:hidden path="status" value="REQUERY" />
+                        </c:if>
+    				</c:if>
+    				<!-- // status 게시글 수정시에는 REGISTER readonly 표시-->
+    				<c:if test="${registerFlag == 'modify'}">
+    					<form:select path="status" cssClass="use">
+    						<form:option value="REGISTER" label="민원 접수"></form:option>
+    						<form:option value="ANSWERED" label="답변 완료"></form:option>
+    						<form:option value="HOLD" label="처리 보류"></form:option>
+    						<form:option value="REQUERY" label="재문의"></form:option>
+    					</form:select>
+    				</c:if>	
     			</td>
     		</tr>
     		<tr>
+    			<!-- // 게시글 내용 -->
     			<td class="tbtd_caption"><label for="content"><spring:message code="title.sample.content" /></label></td>
     			<td class="tbtd_content">
     				<form:textarea path="content" rows="5" cols="58" />&nbsp;<form:errors path="content" />
                 </td>
     		</tr>
     		<tr>
+    			<!-- // 게시글 작성자 PK와 아이디 -->
     			<td class="tbtd_caption"><label for="userId"><spring:message code="title.sample.userId" /></label></td>
     			<td class="tbtd_content">
+                    <c:if test="${registerFlag == 'create'}">
+                    	<input type="text" value="임시사용자" maxlength="10" readonly="readonly" class="essentiality" />
+        				<!--   &nbsp;<form:errors path="userId" /> -->
+                    </c:if>
                     <c:if test="${registerFlag == 'modify'}">
-        				<form:input path="userId" maxlength="10" cssClass="essentiality" readonly="true" />
-        				&nbsp;<form:errors path="userId" /></td>
+        				<form:input path="userId" maxlength="10" cssClass="essentiality" readonly="readonly"/>
+        				<!-- &nbsp;<form:errors path="userId" /> -->
                     </c:if>
-                    <c:if test="${registerFlag != 'modify'}">
-        				<form:input path="userId" maxlength="10" cssClass="txt"  />
-        				&nbsp;<form:errors path="userId" /></td>
-                    </c:if>
+                </td>    
     		</tr>
     	</table>
       </div>

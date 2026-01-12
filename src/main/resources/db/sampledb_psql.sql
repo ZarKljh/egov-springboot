@@ -62,7 +62,8 @@ CREATE TABLE IF NOT EXISTS article (
     content TEXT NOT NULL,
     user_id INTEGER,              -- FK 아직 안 씀 (그냥 숫자 필드)
     form_id INTEGER,              -- 사용한 민원서식 ID
-    status VARCHAR(20) DEFAULT 'RECEIVED',  
+    status VARCHAR(20) DEFAULT 'REGISTER',  
+    parent_article_id INTEGER, 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
 );

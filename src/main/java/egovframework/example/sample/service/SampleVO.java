@@ -55,6 +55,9 @@ public class SampleVO extends SampleDefaultVO {
 	/** 상태 */
 	private String status;
 	
+	/** 상태 */
+	private Long parentArticleId;
+	
 	/** 게시물 생성일 */
 	private LocalDateTime createdAt;
 	
@@ -109,6 +112,14 @@ public class SampleVO extends SampleDefaultVO {
 	
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	
+	public Long getParentArticleId(){
+		return this.parentArticleId;
+	}
+	
+	public void setParentArticleId(Long parentArticleId) {
+		this.parentArticleId = parentArticleId;
 	}
 	
 	public LocalDateTime getCreatedAt() {
