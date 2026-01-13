@@ -55,8 +55,18 @@
 	<select id="selectSample" resultMap="sample">
 
 			SELECT
-				article_id, title, content, user_id, form_id, status, created_at, updated_at
-			FROM article
+				a.article_id, 
+				a.title, 
+				a.content, 
+				a.user_id, 
+				b.username,
+				a.form_id, 
+				a.status, 
+				a.parent_article_id, 
+				a.created_at, 
+				a.updated_at
+			FROM article a
+			LEFT OUTER JOIN site_user b ON a.user_id = b.user_id
 			WHERE article_id=#{articleId}
 
 	</select>
@@ -64,20 +74,29 @@
 	<select id="selectSampleList" parameterType="searchVO" resultType="egovMap">
 
 			SELECT
-				article_id, title, content, user_id, form_id, status, created_at, updated_at
-			FROM article
+				a.article_id, 
+				a.title, 
+				a.content, 
+				a.user_id,
+				b.username, 
+				a.form_id, 
+				a.status, 
+				a.created_at, 
+				a.updated_at
+			FROM article a
+			LEFT OUTER JOIN site_user b ON a.user_id = b.user_id
 			WHERE 1=1
 			<if test="searchKeyword != null and searchKeyword != ''">
 		        <choose>
 		            <when test="searchCondition == 0">
-						AND	title LIKE '%' || #{searchKeyword} || '%'
+						AND	a.title LIKE '%' || #{searchKeyword} || '%'
 					</when>
 		            <when test="searchCondition == 1">
-						AND	content LIKE '%' || #{searchKeyword} || '%'
+						AND	a.content LIKE '%' || #{searchKeyword} || '%'
 					</when>
 				</choose>
 			</if>
-			ORDER BY article_id DESC  
+			ORDER BY a.article_id DESC  
 			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
 	</select>
 

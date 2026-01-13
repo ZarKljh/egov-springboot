@@ -49,6 +49,10 @@ public class SampleVO extends SampleDefaultVO {
 	/** 작성자 아이디 */
 	private Long userId;
 	
+	/** 작성자 이름 join쿼리를 이용해서 값을 가져온다 */
+	private String username;
+	
+	
 	/** 게시된 민원내용과 관련 서식 아이디 */
 	private Long formId;
 
@@ -98,6 +102,13 @@ public class SampleVO extends SampleDefaultVO {
 		this.userId = userId;
 	}
 	
+	public String getUsername() {
+		return this.username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
 	public Long getFormId(){
 		return this.formId;
 	}

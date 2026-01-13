@@ -109,7 +109,7 @@ public class EgovSampleController {
 	 */
 	@GetMapping("/addSample.do")
 	public String addSampleView(@ModelAttribute("searchVO") SampleDefaultVO searchVO, Model model) throws Exception {
-		model.addAttribute("sampleVO", new SampleVO());
+		model.addAttribute("sampleVO", new SampleVO());	
 		return "sample/egovSampleRegister";
 	}
 
@@ -132,7 +132,11 @@ public class EgovSampleController {
 			model.addAttribute("sampleVO", sampleVO);
 			return "sample/egovSampleRegister";
 		}
-
+		
+		// 로그인기능이 현재 없기 때문에, 임시로 모든 등록글에 userId = 1 인 회원을 등록자로 설정
+		
+		sampleVO.setUserId(1L);
+	
 		sampleService.insertSample(sampleVO);
 		status.setComplete();
 		
@@ -152,16 +156,19 @@ public class EgovSampleController {
 	 * @exception Exception
 	 */
 	@GetMapping("/updateSampleView.do")
-	public String updateSampleView(@RequestParam("selectedId") Long articleId, @ModelAttribute("searchVO") SampleDefaultVO searchVO, Model model) throws Exception {
+	public String updateSampleView(@RequestParam("articleId") Long articleId, @ModelAttribute("searchVO") SampleDefaultVO searchVO, Model model) throws Exception {
 		SampleVO sampleVO = new SampleVO();
 		//sampleVO.setId(id);
 		sampleVO.setArticleId(articleId);
+		SampleVO result = sampleService.selectSample(sampleVO);
 		// 변수명은 CoC 에 따라 sampleVO
-		model.addAttribute(selectSample(sampleVO, searchVO));
+		//model.addAttribute(selectSample(sampleVO, searchVO));
+		model.addAttribute("sampleVO", result);
+		model.addAttribute("searchVO", searchVO);
 		
-		List<FormsVO> formsList = sampleService.selectFormsList();
-		
-		model.addAttribute("formsList", formsList);
+//		List<FormsVO> formsList = sampleService.selectFormsList();
+//		
+//		model.addAttribute("formsList", formsList);
 		
 		return "sample/egovSampleRegister";
 	}

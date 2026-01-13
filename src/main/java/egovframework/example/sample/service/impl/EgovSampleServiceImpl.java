@@ -67,12 +67,19 @@ public class EgovSampleServiceImpl extends EgovAbstractServiceImpl implements Eg
 	 */
 	@Override
 	public void insertSample(SampleVO vo) throws Exception {
-		LOGGER.debug(vo.toString());
-
+		LOGGER.debug("입력데이터 확인: " + vo.toString());
+		
+		if(vo.getParentArticleId() != null && vo.getParentArticleId() > 0) {
+			vo.setStatus("REQUERY");
+		} else {
+			vo.setStatus("REGISTER");
+		}
+		
+		
 		/** ID Generation Service */
 		//String id = egovIdGnrService.getNextStringId();
 		//vo.setId(id);
-		LOGGER.debug(vo.toString());
+		LOGGER.debug("입력값 가공 후 데이터 : " + vo.toString());
 
 		sampleDAO.insertSample(vo);
 		//return id;

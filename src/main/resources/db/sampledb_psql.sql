@@ -66,6 +66,7 @@ CREATE TABLE IF NOT EXISTS article (
     parent_article_id INTEGER, 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
+    CONSTRAINT fk_article_user FOREIGN KEY (user_id) REFERENCES site_user (user_id)
 );
 
 -- 3. 첨부 서류 / 파일 테이블

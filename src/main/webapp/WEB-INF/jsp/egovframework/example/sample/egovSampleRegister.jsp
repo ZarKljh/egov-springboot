@@ -50,7 +50,8 @@
         -->
         /* 글 등록 function */
         function fn_egov_save() {
-        	frm = document.detailForm;
+        	const frm = document.detailForm;
+        	
         	if(!validateSampleVO(frm)){
                 return;
             }else{
@@ -141,14 +142,14 @@
     		</tr>
     		<tr>
     			<!-- // 게시글 작성자 PK와 아이디 -->
-    			<td class="tbtd_caption"><label for="userId"><spring:message code="title.sample.userId" /></label></td>
+    			<td class="tbtd_caption"><label for="userId"><spring:message code="title.sample.username" /></label></td>
     			<td class="tbtd_content">
                     <c:if test="${registerFlag == 'create'}">
                     	<input type="text" value="임시사용자" maxlength="10" readonly="readonly" class="essentiality" />
         				<!--   &nbsp;<form:errors path="userId" /> -->
                     </c:if>
                     <c:if test="${registerFlag == 'modify'}">
-        				<form:input path="userId" maxlength="10" cssClass="essentiality" readonly="readonly"/>
+        				<form:input path="username" maxlength="10" cssClass="essentiality" readonly="readonly"/>
         				<!-- &nbsp;<form:errors path="userId" /> -->
                     </c:if>
                 </td>    

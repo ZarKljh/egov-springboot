@@ -26,14 +26,14 @@
     <title><spring:message code="title.sample" /></title>
     <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/sample.css'/>"/>
     <script type="text/javaScript" language="javascript" defer="defer">
-        <!--
+        
         /* 글 수정 화면 function */
-        function fn_egov_select(id) {
-        	document.listForm.selectedId.value = id;
+        function fn_egov_select(articleId) {
+        	document.listForm.articleId.value = articleId;
            	document.listForm.action = "<c:url value='/updateSampleView.do'/>";
            	document.listForm.submit();
         }
-        
+        <!--
         /* 글 등록 화면 function */
         function fn_egov_addView() {
            	document.listForm.action = "<c:url value='/addSample.do'/>";
@@ -59,7 +59,7 @@
 
 <body style="text-align:center; margin:0 auto; display:inline; padding-top:100px;">
     <form:form modelAttribute="searchVO" id="listForm" name="listForm" method="get">
-        <input type="hidden" name="selectedId" />
+        <input type="hidden" name="articleId" />
         <div id="content_pop">
         	<!-- 타이틀 -->
         	<div id="title">
@@ -90,32 +90,41 @@
         	</div>
         	<!-- List -->
         	<div id="table">
-        		<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="카테고리ID, 케테고리명, 사용여부, Description, 등록자 표시하는 테이블">
-        			<caption style="visibility:hidden">카테고리ID, 케테고리명, 사용여부, Description, 등록자 표시하는 테이블</caption>
+        		<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="번호, 게시글ID, 제목, 상태, 내용 요약, 작성자를 표시하는 테이블입니다.">
+        			<caption style="visibility:hidden">번호, 게시글ID, 제목, 상태, 내용 요약, 작성자를 표시하는 테이블입니다.</caption>
         			<colgroup>
         				<col width="40"/>
-        				<col width="100"/>
-        				<col width="150"/>
+        				<col width="200"/>
         				<col width="80"/>
         				<col width="?"/>
-        				<col width="60"/>
+        				<col width="120"/>
         			</colgroup>
         			<tr>
         				<th align="center">No</th>
-        				<th align="center"><spring:message code="title.sample.id" /></th>
-        				<th align="center"><spring:message code="title.sample.name" /></th>
-        				<th align="center"><spring:message code="title.sample.useYn" /></th>
-        				<th align="center"><spring:message code="title.sample.description" /></th>
-        				<th align="center"><spring:message code="title.sample.regUser" /></th>
+        				<th align="center"><spring:message code="title.sample.title" /></th>
+        				<th align="center"><spring:message code="title.sample.status" /></th>
+        				<th align="center"><spring:message code="title.sample.content" /></th>
+        				<th align="center"><spring:message code="title.sample.username" /></th>
         			</tr>
         			<c:forEach var="result" items="${resultList}" varStatus="status">
             			<tr>
             				<td align="center" class="listtd"><c:out value="${paginationInfo.totalRecordCount+1 - ((searchVO.pageIndex-1) * searchVO.pageSize + status.count)}"/></td>
-            				<td align="center" class="listtd"><a href="javascript:fn_egov_select('<c:out value="${result.id}"/>')"><c:out value="${result.id}"/></a></td>
-            				<td align="left" class="listtd"><c:out value="${result.name}"/>&nbsp;</td>
-            				<td align="center" class="listtd"><c:out value="${result.useYn}"/>&nbsp;</td>
-            				<td align="center" class="listtd"><c:out value="${result.description}"/>&nbsp;</td>
-            				<td align="center" class="listtd"><c:out value="${result.regUser}"/>&nbsp;</td>
+            				<td align="center" class="listtd">
+            					<c:if test="${result.parentArticleId > 0}">
+                					&nbsp;&nbsp;&nbsp;&nbsp;[재문의] 
+            					</c:if>
+            					<a href="javascript:fn_egov_select('<c:out value="${result.articleId}"/>')"><c:out value="${result.title}"/></a>
+            				</td>
+           					<!--<c:out value="${result.status}"/>&nbsp;-->
+            				<td align="center" class="listtd">
+            					<c:choose>
+            						<c:when test="${result.status == 'REGISTER'}">접수완료</c:when>
+                					<c:when test="${result.status == 'REQUERY'}">재문의</c:when>
+                					<c:otherwise><c:out value="${result.status}"/></c:otherwise>
+            					</c:choose>
+            				</td>
+            				<td align="center" class="listtd"><c:out value="${result.content}"/>&nbsp;</td>
+            				<td align="center" class="listtd"><c:out value="${result.username}"/>&nbsp;</td>
             			</tr>
         			</c:forEach>
         		</table>
