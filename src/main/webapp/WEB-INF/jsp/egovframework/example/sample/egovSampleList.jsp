@@ -33,13 +33,13 @@
            	document.listForm.action = "<c:url value='/updateSampleView.do'/>";
            	document.listForm.submit();
         }
-        <!--
+       
         /* 글 등록 화면 function */
         function fn_egov_addView() {
            	document.listForm.action = "<c:url value='/addSample.do'/>";
            	document.listForm.submit();
         }
-        
+        <!--
         /* 글 목록 화면 function */
         function fn_egov_selectList() {
         	document.listForm.action = "<c:url value='/egovSampleList.do'/>";
@@ -73,8 +73,9 @@
         			<li>
         			    <label for="searchCondition" style="visibility:hidden;"><spring:message code="search.choose" /></label>
         				<form:select path="searchCondition" cssClass="use">
-        					<form:option value="1" label="Name" />
-        					<form:option value="0" label="ID" />
+        					<form:option value="0"><spring:message code="title.sample.title"/></form:option>
+        					<form:option value="1"><spring:message code="title.sample.content"/></form:option>
+        					<form:option value="2"><spring:message code="title.sample.username"/></form:option>
         				</form:select>
         			</li>
         			<li><label for="searchKeyword" style="visibility:hidden;display:none;"><spring:message code="search.keyword" /></label>

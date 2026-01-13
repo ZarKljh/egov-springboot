@@ -107,12 +107,26 @@ public class EgovSampleController {
 	 * @return "egovSampleRegister"
 	 * @exception Exception
 	 */
+	
+
+	
 	@GetMapping("/addSample.do")
-	public String addSampleView(@ModelAttribute("searchVO") SampleDefaultVO searchVO, Model model) throws Exception {
-		model.addAttribute("sampleVO", new SampleVO());	
+	public String addSampleRequery(@RequestParam(value="parentArticleId", required=false) Long parentId, @ModelAttribute("searchVO") SampleDefaultVO searchVO, Model model) throws Exception {
+		System.out.println("▶▶▶ 재문의 컨트롤러 진입 성공! parentId: " + parentId);
+		SampleVO vo = new SampleVO();
+		if(parentId != null && parentId > 0) {
+			vo.setParentArticleId(parentId);
+			vo.setTitle("[재문의]");
+		} else {
+			vo.setParentArticleId(null);
+		}
+		model.addAttribute("sampleVO", vo);
+		model.addAttribute("registerFlag", "create");
+		model.addAttribute("searchVO", searchVO);
 		return "sample/egovSampleRegister";
 	}
-
+	
+	
 	/**
 	 * 글을 등록한다.
 	 * @param sampleVO - 등록할 정보가 담긴 VO

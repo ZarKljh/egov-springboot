@@ -34,7 +34,7 @@
     <validator:javascript formName="sampleVO" staticJavascript="false" xhtml="true" cdata="false"/>
     
     <script type="text/javaScript" language="javascript" defer="defer">
-        <!--
+        
         /* 글 목록 화면 function */
         function fn_egov_selectList() {
            	document.detailForm.action = "<c:url value='/egovSampleList.do'/>";
@@ -44,10 +44,14 @@
         
         /* 글 삭제 function */
         function fn_egov_delete() {
-           	document.detailForm.action = "<c:url value='/deleteSample.do'/>";
-           	document.detailForm.submit();
+        	if(confirm("정말 삭제하시겠습니까?")){
+        		document.detailForm.action = "<c:url value='/deleteSample.do'/>";
+               	document.detailForm.submit();	
+        	} else {
+        		return; 
+        	}
         }
-        -->
+        
         /* 글 등록 function */
         function fn_egov_save() {
         	const frm = document.detailForm;
@@ -58,6 +62,25 @@
             	frm.action = "<c:url value="${registerFlag == 'create' ? '/addSample.do' : '/updateSample.do'}"/>";
                 frm.submit();
             }
+        }
+        
+        /* 글 등록 화면 function */
+        function fn_egov_requery() {
+        	
+        	// 1. 폼(detailForm)을 변수에 담습니다.
+            const frm = document.detailForm;
+            // 2. 폼의 action 주소를 등록 화면 주소로 바꿉니다.
+           
+            // (리스트 화면에서 봤던 그 주소입니다!)
+           
+            // 3. 현재 글의 articleId를 parentArticleId라는 이름으로 URL 뒤에 붙여서 보냅니다.
+            // 예: action = 주소 + "?parentArticleId=" + 현재ID;
+            frm.action = "<c:url value='/addSample.do'/>";
+            frm.method = "get";
+            frm.parentArticleId.value = frm.articleId.value;
+            // 4. 전송(submit) 합니다.
+            frm.submit();
+     
         }
         
        
@@ -87,10 +110,13 @@
     		<c:if test="${registerFlag == 'modify'}">
     			<!-- // 게시물 아이디 : hidden 처리 -->
         		<tr>
+        			<!-- 
         			<td class="tbtd_caption"><label for="articleId"><spring:message code="title.sample.articleId" /></label></td>
         			<td class="tbtd_content">
         				<form:hidden path="articleId" cssClass="essentiality" maxlength="10" readonly="true" />
         			</td>
+        			 -->
+        			<form:hidden path="articleId"/>
         		</tr>
     		</c:if>
     		<tr>
@@ -181,6 +207,15 @@
                         </span>
                     </li>
     			</c:if>
+    			
+    			<c:if test="${registerFlag == 'modify'}">
+    				<li>
+    					<span class="btn_blue_l">
+                            <a href="javascript:fn_egov_requery();"><spring:message code="button.requery" /></a>
+                            <img src="<c:url value='/images/egovframework/example/btn_bg_r.gif'/>" style="margin-left:6px;" alt=""/>
+                        </span>
+    				</li>
+    			</c:if>	
     			<li>
                     <span class="btn_blue_l">
                         <a href="javascript:document.detailForm.reset();"><spring:message code="button.reset" /></a>

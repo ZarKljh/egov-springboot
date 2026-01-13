@@ -94,6 +94,9 @@
 		            <when test="searchCondition == 1">
 						AND	a.content LIKE '%' || #{searchKeyword} || '%'
 					</when>
+					<when test="searchCondition == 2">
+						AND	b.username LIKE '%' || #{searchKeyword} || '%'
+					</when>
 				</choose>
 			</if>
 			ORDER BY a.article_id DESC  
@@ -103,15 +106,19 @@
 	<select id="selectSampleListTotCnt" parameterType="searchVO" resultType="int">
 
 			SELECT COUNT(*) totcnt
-			FROM article
+			FROM article a
+			LEFT OUTER JOIN site_user b ON a.user_id = b.user_id
 			WHERE 1=1
 			<if test="searchKeyword != null and searchKeyword != ''">
 		        <choose>
 		            <when test="searchCondition == 0">
-						AND title LIKE '%' || #{searchKeyword} || '%'
+						AND a.title LIKE '%' || #{searchKeyword} || '%'
 					</when>
 		            <when test="searchCondition == 1">
-						AND	content LIKE '%' || #{searchKeyword} || '%'
+						AND	a.content LIKE '%' || #{searchKeyword} || '%'
+					</when>
+					<when test="searchCondition == 2">
+						AND	b.username LIKE '%' || #{searchKeyword} || '%'
 					</when>
 				</choose>
 			</if>
