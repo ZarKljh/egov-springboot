@@ -75,9 +75,9 @@
            
             // 3. 현재 글의 articleId를 parentArticleId라는 이름으로 URL 뒤에 붙여서 보냅니다.
             // 예: action = 주소 + "?parentArticleId=" + 현재ID;
+            frm.parentArticleId.value = frm.articleId.value;
             frm.action = "<c:url value='/addSample.do'/>";
             frm.method = "get";
-            frm.parentArticleId.value = frm.articleId.value;
             // 4. 전송(submit) 합니다.
             frm.submit();
      
@@ -86,14 +86,17 @@
        
     </script>
 </head>
-<body style="text-align:center; margin:0 auto; display:inline; padding-top:100px;">
+<!-- <body style="text-align:center; margin:0 auto; display:inline; padding-top:100px;"> -->
+<body>
+<jsp:include page="/WEB-INF/jsp/egovframework/example/cmmn/header.jsp" />
+
 
 <form:form modelAttribute="sampleVO" id="detailForm" name="detailForm" method="post">
 	<form:hidden path="parentArticleId" />
-    <div id="content_pop">
+    <div id="content_pop" style="float: none !important; height: auto !important;">
     	<!-- 타이틀 -->
-    	<div id="title">
-    		<ul>
+    	<div id="title" style="float: none !important;">
+    		<ul style="float: none !important;">
     			<li><img src="<c:url value='/images/egovframework/example/title_dot.gif'/>" alt=""/>
                     <c:if test="${registerFlag == 'create'}"><spring:message code="button.create" /></c:if>
                     <c:if test="${registerFlag == 'modify'}"><spring:message code="button.modify" /></c:if>
@@ -101,7 +104,7 @@
     		</ul>
     	</div>
     	<!-- // 타이틀 -->
-    	<div id="table">
+    	<div id="table" style="float: none !important;">
     	<table width="100%" border="1" cellpadding="0" cellspacing="0" style="bordercolor:#D3E2EC; bordercolordark:#FFFFFF; BORDER-TOP:#C2D0DB 2px solid; BORDER-LEFT:#ffffff 1px solid; BORDER-RIGHT:#ffffff 1px solid; BORDER-BOTTOM:#C2D0DB 1px solid; border-collapse: collapse;">
     		<colgroup>
     			<col width="150"/>
@@ -182,7 +185,7 @@
     		</tr>
     	</table>
       </div>
-    	<div id="sysbtn">
+      <div id="sysbtn" style="float: none !important;">
     		<ul>
     			<li>
                     <span class="btn_blue_l">
@@ -225,6 +228,7 @@
             </ul>
     	</div>
     </div>
+      
     <!-- 검색조건 유지 -->
     <input type="hidden" name="searchCondition" value="<c:out value='${searchVO.searchCondition}'/>"/>
     <input type="hidden" name="searchKeyword" value="<c:out value='${searchVO.searchKeyword}'/>"/>

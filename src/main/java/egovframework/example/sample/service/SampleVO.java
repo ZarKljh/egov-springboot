@@ -59,8 +59,17 @@ public class SampleVO extends SampleDefaultVO {
 	/** 상태 */
 	private String status;
 	
-	/** 상태 */
+	// 재문의 글의 원문 글 아이디
+	private Long rootId = 0L;
+	
+	/** 재문의 글의 부모 글 아이디 */
 	private Long parentArticleId;
+
+	/** 그룹 내 정렬 순서 (추가) */
+    private int sortOrder;
+
+    /** 들여쓰기 깊이 (추가) */
+    private int dept;
 	
 	/** 게시물 생성일 */
 	private LocalDateTime createdAt;
@@ -125,6 +134,14 @@ public class SampleVO extends SampleDefaultVO {
 		this.status = status;
 	}
 	
+	public Long getRootId() {
+	    return rootId;
+	}
+
+	public void setRootId(Long rootId) {
+	    this.rootId = rootId;
+	}
+	
 	public Long getParentArticleId(){
 		return this.parentArticleId;
 	}
@@ -133,6 +150,22 @@ public class SampleVO extends SampleDefaultVO {
 		this.parentArticleId = parentArticleId;
 	}
 	
+	public int getSortOrder() {
+        return sortOrder;
+    }
+
+    public void setSortOrder(int sortOrder) {
+        this.sortOrder = sortOrder;
+    }
+	
+    public int getDept() {
+        return dept;
+    }
+
+    public void setDept(int dept) {
+        this.dept = dept;
+    }
+    
 	public LocalDateTime getCreatedAt() {
         return this.createdAt;
     }

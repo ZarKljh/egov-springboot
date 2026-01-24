@@ -61,4 +61,11 @@
 	<!-- /For Pagination Tag -->
 
     <mvc:view-controller path="/cmmn/validator.do" view-name="cmmn/validator"/>
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**/*.do"/>
+            
+            <bean class="egovframework.com.cmm.interceptor.JwtInterceptor" />
+        </mvc:interceptor>
+    </mvc:interceptors>
 </beans>

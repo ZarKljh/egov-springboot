@@ -21,6 +21,8 @@ import org.egovframe.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import org.egovframe.rte.fdl.idgnr.EgovIdGnrService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import egovframework.example.sample.service.EgovSampleService;
@@ -64,14 +66,41 @@ public class EgovSampleServiceImpl extends EgovAbstractServiceImpl implements Eg
 	 * @param vo - 등록할 정보가 담긴 SampleVO
 	 * @return 등록 결과
 	 * @exception Exception
+	 * 
+	 * [성능 최적화] @CacheEvict로 목록 캐시 무효화
+	 * - 글 등록 시 게시판 목록이 변경되므로 캐시 삭제
+	 * - allEntries = true: 해당 캐시의 모든 항목 삭제
 	 */
 	@Override
+	@CacheEvict(value = {"boardList", "boardCount"}, allEntries = true)
 	public void insertSample(SampleVO vo) throws Exception {
 		LOGGER.debug("입력데이터 확인: " + vo.toString());
 		
 		if(vo.getParentArticleId() != null && vo.getParentArticleId() > 0) {
+			SampleVO searchParentVO = new SampleVO();
+			searchParentVO.setArticleId(vo.getParentArticleId());
+			SampleVO parentVO = sampleDAO.selectSample(searchParentVO);
+			
+			if(parentVO != null) {
+				// [rootId 설정] 
+	            // 부모가 원문이면 부모의 ID를, 부모가 이미 재문의라면 부모가 가진 rootId를 상속받습니다.
+	            if (parentVO.getRootId() == 0 || parentVO.getRootId() == null) {
+	                vo.setRootId(parentVO.getArticleId()); // 부모가 원문인 경우
+	            } else {
+	                vo.setRootId(parentVO.getRootId());    // 부모가 이미 답글인 경우 (원문ID 상속)
+	            }
+				
+				vo.setSortOrder(parentVO.getSortOrder()+1);
+				vo.setDept(parentVO.getDept()+1);
+				sampleDAO.updateSortOrder(vo);
+			}
+			
 			vo.setStatus("REQUERY");
 		} else {
+			vo.setRootId(0L);
+			vo.setParentArticleId(0L);
+	        vo.setSortOrder(0);
+	        vo.setDept(0);
 			vo.setStatus("REGISTER");
 		}
 		
@@ -90,8 +119,13 @@ public class EgovSampleServiceImpl extends EgovAbstractServiceImpl implements Eg
 	 * @param vo - 수정할 정보가 담긴 SampleVO
 	 * @return void형
 	 * @exception Exception
+	 * 
+	 * [성능 최적화] @CacheEvict로 관련 캐시 무효화
+	 * - 글 수정 시 상세 캐시와 목록 캐시 모두 무효화
+	 * - beforeInvocation = false: 메서드 성공 시에만 캐시 삭제
 	 */
 	@Override
+	@CacheEvict(value = {"boardList", "boardDetail", "boardCount"}, allEntries = true)
 	public void updateSample(SampleVO vo) throws Exception {
 		sampleDAO.updateSample(vo);
 	}
@@ -101,8 +135,12 @@ public class EgovSampleServiceImpl extends EgovAbstractServiceImpl implements Eg
 	 * @param vo - 삭제할 정보가 담긴 SampleVO
 	 * @return void형
 	 * @exception Exception
+	 * 
+	 * [성능 최적화] @CacheEvict로 관련 캐시 무효화
+	 * - 글 삭제 시 상세 캐시와 목록 캐시 모두 무효화
 	 */
 	@Override
+	@CacheEvict(value = {"boardList", "boardDetail", "boardCount"}, allEntries = true)
 	public void deleteSample(SampleVO vo) throws Exception {
 		sampleDAO.deleteSample(vo);
 	}
@@ -112,8 +150,14 @@ public class EgovSampleServiceImpl extends EgovAbstractServiceImpl implements Eg
 	 * @param vo - 조회할 정보가 담긴 SampleVO
 	 * @return 조회한 글
 	 * @exception Exception
+	 * 
+	 * [성능 최적화] @Cacheable로 상세 조회 결과 캐싱
+	 * - 캐시 키: articleId (게시글 ID)
+	 * - 동일한 게시글 조회 시 DB 조회 없이 캐시에서 반환
+	 * - 예상 성능 개선: 0.3초 → 0.01초
 	 */
 	@Override
+	@Cacheable(value = "boardDetail", key = "#vo.articleId")
 	public SampleVO selectSample(SampleVO vo) throws Exception {
 		SampleVO resultVO = sampleDAO.selectSample(vo);
 		if (resultVO == null)
@@ -137,8 +181,14 @@ public class EgovSampleServiceImpl extends EgovAbstractServiceImpl implements Eg
 	 * @param searchVO - 조회할 정보가 담긴 VO
 	 * @return 글 총 갯수
 	 * @exception
+	 * 
+	 * [성능 최적화] @Cacheable로 총 개수 조회 결과 캐싱
+	 * - 캐시 키: 검색 조건 조합
+	 * - 동일한 검색 조건 조회 시 DB COUNT 쿼리 없이 캐시에서 반환
+	 * - 예상 성능 개선: 0.3초 → 0.01초
 	 */
 	@Override
+	@Cacheable(value = "boardCount", key = "#searchVO.searchCondition + '_' + #searchVO.searchKeyword")
 	public int selectSampleListTotCnt(SampleDefaultVO searchVO) {
 		return sampleDAO.selectSampleListTotCnt(searchVO);
 	}

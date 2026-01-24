@@ -96,5 +96,5 @@ public interface SampleMapper {
      */
     List<FormsVO> selectFormsList() throws Exception;
 
-
+    void updateSortOrder(SampleVO vo) throws Exception;
 }

@@ -10,6 +10,8 @@
 		<result property="formId" column="form_id"/>
 		<result property="status" column="status"/>
 		<result property="parentArticleId" column="parent_article_id"/>
+		<result property="sortOrder" column="sort_order"/>
+		<result property="dept" column="dept"/>
 		<result property="createdAt" column="created_at"/>
 		<result property="updatedAt" column="updated_at"/>	
 	</resultMap>
@@ -22,27 +24,32 @@
 				  , user_id
 				  , form_id
 				  , status
+				  , root_id
 				  , parent_article_id
+				  , sort_order
+				  , dept
 				  , created_at )
 			VALUES ( #{title}
 				  , #{content}
 				  , #{userId}
 				  , #{formId}
 				  , #{status}
+				  , #{rootId}
 				  , #{parentArticleId}
+				  , #{sortOrder}
+				  , #{dept}	  
 				  , NOW() )
 
 	</insert>
 
-	<update id="updateSample">
-
+	<update id="updateSample">  
 			UPDATE article
 			SET title=#{title}
 				, content=#{content}
 				, status=#{status}
 				, updated_at=NOW()
 				  WHERE article_id=#{articleId}
-
+			
 	</update>
 
 	<delete id="deleteSample">
@@ -68,7 +75,6 @@
 			FROM article a
 			LEFT OUTER JOIN site_user b ON a.user_id = b.user_id
 			WHERE article_id=#{articleId}
-
 	</select>
 
 	<select id="selectSampleList" parameterType="searchVO" resultType="egovMap">
@@ -81,6 +87,11 @@
 				b.username, 
 				a.form_id, 
 				a.status, 
+				a.root_id,
+				a.parent_article_id,
+				(SELECT title FROM article WHERE article_id = a.parent_article_id) AS parent_title,
+				a.sort_order,
+				a.dept,
 				a.created_at, 
 				a.updated_at
 			FROM article a
@@ -99,8 +110,17 @@
 					</when>
 				</choose>
 			</if>
-			ORDER BY a.article_id DESC  
-			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+			ORDER BY 
+				(CASE WHEN a.root_id = 0 THEN a.article_id ELSE a.root_id END) DESC,
+				a.sort_order ASC
+				<!--  
+		        (CASE WHEN a.parent_article_id IS NULL OR a.parent_article_id = 0 
+		              THEN a.article_id 
+		              ELSE a.parent_article_id 
+		         END) DESC,
+		        a.created_at ASC
+		        -->
+    		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}  
 	</select>
 
 	<select id="selectSampleListTotCnt" parameterType="searchVO" resultType="int">
@@ -123,5 +143,14 @@
 				</choose>
 			</if>
 	</select>
+	
+	<update id="updateSortOrder" parameterType="sampleVO">
+	   UPDATE article 
+		    SET sort_order = sort_order + 1
+		    WHERE root_id = #{rootId}         /* 같은 원문 가족들만 찾아서 */
+		      AND sort_order >= #{sortOrder}  /* 내 자리를 포함해 뒤에 있는 글들을 */
+		      AND article_id != #{articleId}  /* 한 칸씩 뒤로 밀기 */
+	</update>
+	
 
 </mapper>

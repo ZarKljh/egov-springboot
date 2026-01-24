@@ -5,7 +5,7 @@
 
 <form-validation>
 
-    <formset>
+    <formset language="ko">
         <form name="sampleVO">
         	<field property="title" depends="required">
         		<arg0 key="title.sample.title" />

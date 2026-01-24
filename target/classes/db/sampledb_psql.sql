@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS site_user (
     address_default VARCHAR(100),
     address_detail VARCHAR(100),
     role VARCHAR(20) DEFAULT 'USER',
+	refresh_token VARCHAR(1000) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -62,10 +63,13 @@ CREATE TABLE IF NOT EXISTS article (
     content TEXT NOT NULL,
     user_id INTEGER,              -- FK 아직 안 씀 (그냥 숫자 필드)
     form_id INTEGER,              -- 사용한 민원서식 ID
-    status VARCHAR(20) DEFAULT 'REGISTER',  
-    parent_article_id INTEGER, 
+    sort_order INTEGER DEFAULT 0,
+    dept INTEGER DEFAULT 0,
+    status VARCHAR(20) DEFAULT 'REGISTER', 
+    root_id INTEGER DEFAULT 0,
+    parent_article_id INTEGER DEFAULT 0, 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP
+    updated_at TIMESTAMP,
     CONSTRAINT fk_article_user FOREIGN KEY (user_id) REFERENCES site_user (user_id)
 );
 
@@ -85,8 +89,10 @@ CREATE TABLE IF NOT EXISTS answer (
     answer_id SERIAL PRIMARY KEY,
     article_id INTEGER,            -- 게시글 번호
     user_id INTEGER,               -- 작성자
+    form_id INTEGER,
     content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 5. 민원 서식 종류 테이블
